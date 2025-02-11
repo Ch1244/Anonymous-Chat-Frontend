@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anonymous Chat</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button id="dark-mode-toggle">🌙 Dark Mode</button>
+
+    <div id="username-container">
+      <h2>Enter Your Username</h2>
+      <input type="text" id="username-input" placeholder="Your Name" />
+      <button id="username-btn">Start Chat</button>
+    </div>
+
+    <div id="chat-container" style="display: none">
+      <h1>Anonymous Chat</h1>
+      <div id="chat-box"></div>
+      <p id="typing-indicator" style="display: none">Stranger is typing...</p>
+      <input type="text" id="message-input" placeholder="Type a message..." />
+      <button id="send-btn">Send</button>
+      <button id="new-chat">New Chat</button>
+      <button id="buy-unlimited" style="display: none">
+        💰 Buy Unlimited Chats (€3 for 15 Days)
+      </button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
