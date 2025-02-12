@@ -1,46 +1,85 @@
 const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+let username = "";
+let partner = null;
 
-document.getElementById("startChat").addEventListener("click", function () {
-    const username = document.getElementById("username").value.trim();
-    if (username) {
-        socket.emit("set_username", username);
-        document.getElementById("usernameContainer").style.display = "none";
-        document.getElementById("chatContainer").style.display = "block";
+// Ensure elements exist before adding event listeners
+document.addEventListener("DOMContentLoaded", () => {
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const startChatBtn = document.getElementById("startChat");
+    const sendMessageBtn = document.getElementById("sendMessage");
+    const newChatBtn = document.getElementById("newChat");
+    const messageInput = document.getElementById("messageInput");
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+        });
     }
-});
 
-socket.on("chat_start", (data) => {
-    document.getElementById("chatBox").innerHTML = "<p>Connected to a partner!</p>";
-});
-
-socket.on("waiting", (message) => {
-    document.getElementById("chatBox").innerHTML = `<p>${message}</p>`;
-});
-
-document.getElementById("sendMessage").addEventListener("click", function () {
-    const message = document.getElementById("messageInput").value.trim();
-    if (message) {
-        socket.emit("send_message", message);
-        document.getElementById("chatBox").innerHTML += `<p><b>You:</b> ${message}</p>`;
-        document.getElementById("messageInput").value = "";
+    if (startChatBtn) {
+        startChatBtn.addEventListener("click", () => {
+            username = document.getElementById("usernameInput").value.trim();
+            if (username) {
+                document.getElementById("loginContainer").classList.add("hidden");
+                document.getElementById("chatContainer").classList.remove("hidden");
+                socket.emit("join", username);
+            }
+        });
     }
-});
 
-socket.on("receive_message", (data) => {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML += `<p><b>${data.sender}:</b> ${data.message}</p>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
-});
+    if (sendMessageBtn) {
+        sendMessageBtn.addEventListener("click", () => {
+            const message = messageInput.value;
+            if (message && partner) {
+                socket.emit("sendMessage", { to: partner, message });
+                appendMessage(`You: ${message}`);
+                messageInput.value = "";
+            }
+        });
+    }
 
-document.getElementById("newChat").addEventListener("click", function () {
-    socket.emit("new_chat");
-    document.getElementById("chatBox").innerHTML = "<p>Looking for a new partner...</p>";
-});
+    if (newChatBtn) {
+        newChatBtn.addEventListener("click", () => {
+            socket.emit("leave");
+            location.reload();
+        });
+    }
 
-socket.on("partner_disconnected", (message) => {
-    document.getElementById("chatBox").innerHTML += `<p>${message}</p>`;
-});
+    if (messageInput) {
+        messageInput.addEventListener("input", () => {
+            if (partner) socket.emit("typing", { to: partner });
+        });
+    }
 
-document.getElementById("darkModeToggle").addEventListener("click", function () {
-    document.body.classList.toggle("dark-mode");
+    socket.on("paired", (data) => {
+        partner = data.partner;
+        document.getElementById("status").innerText = `Connected with ${data.partnerName}`;
+    });
+
+    socket.on("receiveMessage", (data) => {
+        appendMessage(`${data.fromName}: ${data.message}`);
+    });
+
+    socket.on("typing", () => {
+        const typingIndicator = document.getElementById("typingIndicator");
+        if (typingIndicator) {
+            typingIndicator.classList.remove("hidden");
+            setTimeout(() => {
+                typingIndicator.classList.add("hidden");
+            }, 1000);
+        }
+    });
+
+    socket.on("partnerLeft", () => {
+        appendMessage("Partner has disconnected.");
+        partner = null;
+    });
+
+    function appendMessage(msg) {
+        const chatBox = document.getElementById("chatBox");
+        const msgDiv = document.createElement("div");
+        msgDiv.textContent = msg;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 });
