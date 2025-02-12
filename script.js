@@ -1,39 +1,70 @@
-const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+const socket = io("https://anonymous-chat-backend-jquo.onrender.com"); // Use your backend URL
 
-document.getElementById("startChat").addEventListener("click", () => {
-    const username = document.getElementById("usernameInput").value;
-    if (username.trim() === "") return;
+const usernameInput = document.getElementById("usernameInput");
+const startChatBtn = document.getElementById("startChat");
+const chatContainer = document.getElementById("chatContainer");
+const chatBox = document.getElementById("chatBox");
+const messageInput = document.getElementById("messageInput");
+const sendMessageBtn = document.getElementById("sendMessage");
+const newChatBtn = document.getElementById("newChat");
+const typingIndicator = document.getElementById("typingIndicator");
 
-    document.querySelector("h1").style.display = "none";
-    document.getElementById("usernameInput").style.display = "none";
-    document.getElementById("startChat").style.display = "none";
-    document.getElementById("chatContainer").style.display = "block";
+let username = "";
+let partnerName = "";
 
-    socket.emit("joinChat", username);
+startChatBtn.addEventListener("click", () => {
+  username = usernameInput.value.trim();
+  if (username) {
+    socket.emit("setUsername", username);
+    document.getElementById("usernameContainer").style.display = "none"; // Hide username input
+    chatContainer.style.display = "block"; // Show chat UI
+  }
 });
 
-socket.on("paired", (partner) => {
-    document.getElementById("chatBox").innerHTML = `<p>Connected with ${partner}</p>`;
+socket.on("waiting", () => {
+  chatBox.innerHTML = "<p>Looking for a partner...</p>";
 });
 
-document.getElementById("sendMessage").addEventListener("click", () => {
-    const message = document.getElementById("messageInput").value;
-    if (message.trim() === "") return;
+socket.on("paired", (data) => {
+  partnerName = data.partnerName;
+  chatBox.innerHTML = `<p>Connected with <strong>${partnerName}</strong></p>`;
+});
 
+sendMessageBtn.addEventListener("click", sendMessage);
+messageInput.addEventListener("keypress", () => {
+  socket.emit("typing");
+});
+
+messageInput.addEventListener("keyup", () => {
+  setTimeout(() => socket.emit("stopTyping"), 2000);
+});
+
+socket.on("typing", (name) => {
+  typingIndicator.innerText = `${name} is typing...`;
+});
+
+socket.on("stopTyping", () => {
+  typingIndicator.innerText = "";
+});
+
+function sendMessage() {
+  const message = messageInput.value.trim();
+  if (message) {
+    chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
     socket.emit("sendMessage", message);
-    document.getElementById("chatBox").innerHTML += `<p><b>You:</b> ${message}</p>`;
-    document.getElementById("messageInput").value = "";
+    messageInput.value = "";
+  }
+}
+
+socket.on("receiveMessage", (data) => {
+  chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
 });
 
-socket.on("receiveMessage", (msg) => {
-    document.getElementById("chatBox").innerHTML += `<p><b>Partner:</b> ${msg}</p>`;
+socket.on("partnerDisconnected", () => {
+  chatBox.innerHTML += `<p><strong>${partnerName} has left the chat.</strong></p>`;
 });
 
-document.getElementById("newChat").addEventListener("click", () => {
-    socket.emit("leaveChat");
-    document.getElementById("chatBox").innerHTML = `<p>Looking for a partner...</p>`;
-});
-
-document.getElementById("darkModeToggle").addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
+newChatBtn.addEventListener("click", () => {
+  chatBox.innerHTML = "<p>Looking for a partner...</p>";
+  socket.emit("newChat");
 });
