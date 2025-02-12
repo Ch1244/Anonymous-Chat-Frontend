@@ -1,97 +1,39 @@
-const socket = io("http://localhost:3000");
+const socket = io("https://your-backend-url.onrender.com");
 
-// ✅ Ensure Elements Exist
-document.addEventListener("DOMContentLoaded", () => {
-    const usernameContainer = document.getElementById("username-container");
-    const usernameInput = document.getElementById("username-input");
-    const usernameBtn = document.getElementById("username-btn");
+document.getElementById("startChat").addEventListener("click", () => {
+    const username = document.getElementById("usernameInput").value;
+    if (username.trim() === "") return;
 
-    const chatContainer = document.getElementById("chat-container");
-    const chatBox = document.getElementById("chat-box");
-    const messageInput = document.getElementById("message-input");
-    const sendBtn = document.getElementById("send-btn");
-    const newChatBtn = document.getElementById("new-chat");
-    const buyUnlimitedBtn = document.getElementById("buy-unlimited");
-    const typingIndicator = document.getElementById("typing-indicator");
-    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    document.querySelector("h1").style.display = "none";
+    document.getElementById("usernameInput").style.display = "none";
+    document.getElementById("startChat").style.display = "none";
+    document.getElementById("chatContainer").style.display = "block";
 
-    let username = localStorage.getItem("username");
-    let chatCount = localStorage.getItem("chatCount") || 0;
-    const freeChatLimit = 6;
-    const isPaidUser = localStorage.getItem("isPaidUser") === "true";
+    socket.emit("joinChat", username);
+});
 
-    // ✅ Fix: Ensure "Start Chat" Button Works
-    usernameBtn.addEventListener("click", () => {
-        username = usernameInput.value.trim();
+socket.on("paired", (partner) => {
+    document.getElementById("chatBox").innerHTML = `<p>Connected with ${partner}</p>`;
+});
 
-        if (username) {
-            localStorage.setItem("username", username);
-            socket.emit("setUsername", { username });
+document.getElementById("sendMessage").addEventListener("click", () => {
+    const message = document.getElementById("messageInput").value;
+    if (message.trim() === "") return;
 
-            usernameContainer.style.display = "none";
-            chatContainer.style.display = "block";
-        } else {
-            alert("Please enter a valid username!");
-        }
-    });
+    socket.emit("sendMessage", message);
+    document.getElementById("chatBox").innerHTML += `<p><b>You:</b> ${message}</p>`;
+    document.getElementById("messageInput").value = "";
+});
 
-    // ✅ Fix: Ensure "Send Message" Works
-    sendBtn.addEventListener("click", () => {
-        const message = messageInput.value.trim();
-        if (message && username) {
-            socket.emit("message", { username, message });
-            chatBox.innerHTML += `<p class="chat-message user-message"><strong>${username}:</strong> ${message}</p>`;
-            messageInput.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    });
+socket.on("receiveMessage", (msg) => {
+    document.getElementById("chatBox").innerHTML += `<p><b>Partner:</b> ${msg}</p>`;
+});
 
-    socket.on("message", (data) => {
-        chatBox.innerHTML += `<p class="chat-message stranger-message"><strong>${data.username || "Stranger"}:</strong> ${data.message}</p>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+document.getElementById("newChat").addEventListener("click", () => {
+    socket.emit("leaveChat");
+    document.getElementById("chatBox").innerHTML = `<p>Looking for a partner...</p>`;
+});
 
-    // ✅ Fix: Typing Indicator
-    messageInput.addEventListener("input", () => {
-        if (username) {
-            socket.emit("typing");
-        }
-    });
-
-    socket.on("typing", (name) => {
-        typingIndicator.innerText = `${name} is typing...`;
-        typingIndicator.style.display = "block";
-        setTimeout(() => {
-            typingIndicator.style.display = "none";
-        }, 2000);
-    });
-
-    // ✅ Fix: Ensure "Dark Mode" Button Works
-    darkModeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
-        const mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
-        localStorage.setItem("darkMode", mode);
-        darkModeToggle.innerText = mode === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
-    });
-
-    // ✅ Fix: Load Dark Mode Preference
-    if (localStorage.getItem("darkMode") === "dark") {
-        document.body.classList.add("dark-mode");
-        darkModeToggle.innerText = "☀️ Light Mode";
-    }
-
-    // ✅ Fix: Ensure "New Chat" Button Works
-    newChatBtn.addEventListener("click", () => {
-        window.location.reload();
-    });
-
-    // ✅ Fix: Ensure Payment Button Works
-    if (!isPaidUser && chatCount >= freeChatLimit) {
-        buyUnlimitedBtn.style.display = "block";
-        buyUnlimitedBtn.addEventListener("click", async () => {
-            const response = await fetch("/create-checkout-session", { method: "POST" });
-            const data = await response.json();
-            window.location.href = data.url;
-        });
-    }
+document.getElementById("darkModeToggle").addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
 });
