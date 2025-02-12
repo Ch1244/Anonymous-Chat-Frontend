@@ -1,4 +1,4 @@
-const socket = io("https://your-backend-url.onrender.com");
+const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
 
 document.getElementById("startChat").addEventListener("click", () => {
     const username = document.getElementById("usernameInput").value;
