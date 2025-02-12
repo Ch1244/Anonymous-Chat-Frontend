@@ -1,25 +1,36 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background: #f5f5f5;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.hidden {
+    display: none;
 }
 
 #chatBox {
     width: 80%;
     height: 300px;
     border: 1px solid #ccc;
-    margin: auto;
     overflow-y: auto;
-    background: white;
+    margin: 20px auto;
     padding: 10px;
+    background-color: white;
+}
+
+input, button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
 }
 
 .dark-mode {
-    background: #222;
+    background-color: #333;
     color: white;
 }
 
 .dark-mode #chatBox {
-    background: #555;
+    background-color: #555;
     color: white;
 }
