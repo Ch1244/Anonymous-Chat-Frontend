@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anonymous Chat</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
     <button id="darkModeToggle">🌙 Dark Mode</button>
-    <div id="chatContainer">
-      <h2 id="status">Looking for a partner...</h2>
-      <div id="chatBox"></div>
-      <p id="typingIndicator" style="display: none">
-        Your partner is typing...
-      </p>
-      <div id="messageInputContainer">
-        <input type="text" id="messageInput" placeholder="Type a message..." />
+
+    <div id="loginContainer">
+        <h2>Enter Your Username</h2>
+        <input type="text" id="usernameInput" placeholder="Enter username">
+        <button id="startChat">Start Chat</button>
+    </div>
+
+    <div id="chatContainer" class="hidden">
+        <h2 id="status">Looking for a partner...</h2>
+        <div id="chatBox"></div>
+        <p id="typingIndicator" class="hidden">Your partner is typing...</p>
+        <input type="text" id="messageInput" placeholder="Type a message...">
         <button id="sendMessage">Send</button>
         <button id="newChat">New Chat</button>
-      </div>
     </div>
+
     <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
     <script src="script.js"></script>
-  </body>
+</body>
 </html>
