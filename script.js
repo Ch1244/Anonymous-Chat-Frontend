@@ -6,20 +6,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
   
-    // Start Chat Button
     document.getElementById('startChat').addEventListener('click', () => {
       username = document.getElementById('usernameInput').value.trim();
       if (username) {
         document.getElementById('usernameContainer').classList.add('hidden');
         document.getElementById('chatContainer').classList.remove('hidden');
-        statusText.textContent = "Looking for a partner..."; // Show while pairing
+        statusText.textContent = "Looking for a partner...";
         socket.emit('join', username);
       } else {
         alert('Please enter a username');
       }
     });
   
-    // Send Message Button
     document.getElementById('sendMessage').addEventListener('click', () => {
       const message = document.getElementById('messageInput').value.trim();
       if (message) {
@@ -35,15 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   
-    // New Chat Button
     document.getElementById('newChat').addEventListener('click', () => {
       socket.emit('leave');
       socket.emit('join', username);
       document.getElementById('chatBox').innerHTML = '';
-      statusText.textContent = "Looking for a partner..."; // Show again when searching
+      statusText.textContent = "Looking for a partner...";
     });
   
-    // Dark Mode / Light Mode Toggle
     darkModeToggle.addEventListener('click', () => {
       body.classList.toggle('dark-mode');
       if (body.classList.contains('dark-mode')) {
@@ -53,10 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   
-    // Receiving Messages
     socket.on('message', (data) => {
       if (data.username === "System" && data.message.includes("Connected")) {
-        statusText.textContent = ""; // Hide "Looking for a partner..." after pairing
+        statusText.textContent = "";
       }
       const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
@@ -66,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     });
   
-    // Partner Disconnected
     socket.on('user-left', () => {
       statusText.textContent = "Looking for a partner...";
       const messageItem = document.createElement('div');
@@ -75,24 +69,28 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('chatBox').appendChild(messageItem);
     });
   
-    // 🚀 Rocket Animation (Now every 30 seconds)
+    // 🚀 Rocket Animation every 20s
     function launchRocket() {
       const rocket = document.createElement('img');
-      rocket.src = "https://cdn-icons-png.flaticon.com/512/3213/3213924.png"; // Rocket image
+      rocket.src = "https://cdn-icons-png.flaticon.com/512/3213/3213924.png";
       rocket.classList.add('rocket');
-  
       document.body.appendChild(rocket);
-  
-      setTimeout(() => {
-        rocket.classList.add('rocket-fly');
-      }, 100);
-  
-      setTimeout(() => {
-        rocket.remove();
-      }, 4000);
+      setTimeout(() => rocket.classList.add('rocket-fly'), 100);
+      setTimeout(() => rocket.remove(), 4000);
     }
   
-    // Launch rocket every 30 seconds
-    setInterval(launchRocket, 30000);
+    setInterval(launchRocket, 20000);
+  
+    // 🪨 Asteroids Animation
+    function launchAsteroid() {
+      const asteroid = document.createElement('div');
+      asteroid.classList.add('asteroid');
+      asteroid.style.top = `${Math.random() * 100}vh`;
+      asteroid.style.left = `${Math.random() * 100}vw`;
+      document.body.appendChild(asteroid);
+      setTimeout(() => asteroid.remove(), 6000);
+    }
+  
+    setInterval(launchAsteroid, 5000);
   });
   
