@@ -17,15 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('sendMessage').addEventListener('click', () => {
       const message = document.getElementById('messageInput').value.trim();
       if (message) {
-        // Display your sent message immediately
+        // Show user's sent message in chat
         const chatBox = document.getElementById('chatBox');
         const messageItem = document.createElement('div');
+        messageItem.classList.add('chat-message', 'you');
         messageItem.textContent = `You: ${message}`;
-        messageItem.style.fontWeight = 'bold';
         chatBox.appendChild(messageItem);
         chatBox.scrollTop = chatBox.scrollHeight;
   
-        // Emit the message to the server
+        // Send message to server
         socket.emit('sendMessage', { username, message });
         document.getElementById('messageInput').value = '';
       }
@@ -44,17 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
     socket.on('message', (data) => {
       const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
+      messageItem.classList.add('chat-message');
       messageItem.textContent = `${data.username}: ${data.message}`;
       chatBox.appendChild(messageItem);
       chatBox.scrollTop = chatBox.scrollHeight;
     });
   
     socket.on('user-left', () => {
-      const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
       messageItem.textContent = "Your partner has left the chat.";
       messageItem.style.fontStyle = 'italic';
-      chatBox.appendChild(messageItem);
+      document.getElementById('chatBox').appendChild(messageItem);
     });
   });
   
