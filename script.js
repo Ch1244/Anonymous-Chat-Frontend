@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (username) {
         document.getElementById('usernameContainer').classList.add('hidden');
         document.getElementById('chatContainer').classList.remove('hidden');
-        document.querySelector('h1').textContent = "Looking for a partner...";
         socket.emit('join', username);
       } else {
         alert('Please enter a username');
@@ -18,6 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('sendMessage').addEventListener('click', () => {
       const message = document.getElementById('messageInput').value.trim();
       if (message) {
+        // Display your sent message immediately
+        const chatBox = document.getElementById('chatBox');
+        const messageItem = document.createElement('div');
+        messageItem.textContent = `You: ${message}`;
+        messageItem.style.fontWeight = 'bold';
+        chatBox.appendChild(messageItem);
+        chatBox.scrollTop = chatBox.scrollHeight;
+  
+        // Emit the message to the server
         socket.emit('sendMessage', { username, message });
         document.getElementById('messageInput').value = '';
       }
@@ -27,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
       socket.emit('leave');
       socket.emit('join', username);
       document.getElementById('chatBox').innerHTML = '';
-      document.querySelector('h1').textContent = "Looking for a partner...";
     });
   
     document.getElementById('darkModeToggle').addEventListener('click', () => {
@@ -35,9 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     socket.on('message', (data) => {
-      if (data.username === "System" && data.message.includes("Connected")) {
-        document.querySelector('h1').textContent = "";  // Remove "Looking for a partner..."
-      }
       const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
       messageItem.textContent = `${data.username}: ${data.message}`;
@@ -46,9 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     socket.on('user-left', () => {
+      const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
       messageItem.textContent = "Your partner has left the chat.";
-      document.getElementById('chatBox').appendChild(messageItem);
+      messageItem.style.fontStyle = 'italic';
+      chatBox.appendChild(messageItem);
     });
   });
   
