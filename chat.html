@@ -8,7 +8,10 @@
   </head>
   <body>
     <div id="chatContainer">
-      <div id="header">Anonymous Chat</div>
+      <div id="header">
+        Anonymous Chat
+        <button id="themeToggle">Toggle Mode</button>
+      </div>
       <div id="statusText">Looking for a partner...</div>
       <div id="messageContainer"></div>
       <div id="inputContainer">
@@ -19,6 +22,7 @@
         ></textarea>
         <button id="sendButton">➤</button>
       </div>
+      <canvas id="rocketCanvas"></canvas>
     </div>
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
@@ -36,35 +40,65 @@
       document
         .getElementById("sendButton")
         .addEventListener("click", sendMessage);
+      document
+        .getElementById("themeToggle")
+        .addEventListener("click", toggleTheme);
 
       function sendMessage() {
         const message = messageInput.value.trim();
         if (message) {
           socket.emit("message", { username, message });
-          displayMessage(`You: ${message}`);
+          displayMessage(`You: ${message}`, "my-message");
           messageInput.value = "";
           messageInput.style.height = "40px";
         }
       }
 
       socket.on("message", (data) => {
-        displayMessage(`${data.username}: ${data.message}`);
+        displayMessage(`${data.username}: ${data.message}`, "partner-message");
       });
 
       socket.on("system", (msg) => {
-        displayMessage(`System: ${msg}`);
-        if (msg.includes("Connected")) {
+        displayMessage(`System: ${msg}`, "system-message");
+        if (msg.includes("Connected"))
           document.getElementById("statusText").textContent = "";
-        }
       });
 
-      function displayMessage(message) {
+      function displayMessage(message, className) {
         const msg = document.createElement("div");
         msg.textContent = message;
+        msg.classList.add(className);
         document.getElementById("messageContainer").appendChild(msg);
         document.getElementById("messageContainer").scrollTop =
           document.getElementById("messageContainer").scrollHeight;
       }
+
+      function toggleTheme() {
+        document.body.classList.toggle("light-mode");
+      }
+
+      // Rocket animation every 10 seconds
+      const canvas = document.getElementById("rocketCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function drawRocket() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#00ffcc";
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        ctx.lineTo(canvas.width, 0);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      setInterval(drawRocket, 10000);
     </script>
   </body>
 </html>
