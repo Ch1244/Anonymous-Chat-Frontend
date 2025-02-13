@@ -1,4 +1,32 @@
-body {
+/* Home Page Styles */
+#homeContainer {
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 600px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  #homeContainer h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  #homeContainer p, #homeContainer ul {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  #homeContainer button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  /* Existing Chat App Styles */
+  body {
     background-color: #f0f0f0;
     color: #333;
     font-family: Arial, sans-serif;
