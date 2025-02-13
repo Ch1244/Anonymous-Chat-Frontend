@@ -54,7 +54,7 @@
       socket.on("system", (msg) => {
         displayMessage(`System: ${msg}`);
         if (msg.includes("Connected")) {
-          document.getElementById("statusText").textContent = ""; // Removes the text
+          document.getElementById("statusText").textContent = "";
         }
       });
 
