@@ -7,18 +7,9 @@
     <title>Anonymous Chat</title>
   </head>
   <body>
-    <div id="usernameContainer">
-      <h2>Welcome to Random Chat!</h2>
-      <p>Please enter your username to start chatting.</p>
-      <input type="text" id="usernameInput" placeholder="Your username" />
-      <button id="startChat">Start Chat</button>
-    </div>
-
-    <div id="chatContainer" class="hidden">
-      <div id="header">
-        <h2>Anonymous Chat</h2>
-        <p id="statusText">Looking for a partner...</p>
-      </div>
+    <div id="chatContainer">
+      <div id="header">Anonymous Chat</div>
+      <div id="statusText">Looking for a partner...</div>
       <div id="messageContainer"></div>
       <div id="inputContainer">
         <textarea
@@ -33,23 +24,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io("https://your-backend-url.onrender.com");
-      let username;
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const startButton = document.getElementById("startChat");
-        startButton.addEventListener("click", () => {
-          username = document.getElementById("usernameInput").value.trim();
-          if (username) {
-            document
-              .getElementById("usernameContainer")
-              .classList.add("hidden");
-            document.getElementById("chatContainer").classList.remove("hidden");
-            socket.emit("join", username);
-          } else {
-            alert("Please enter a username");
-          }
-        });
-      });
+      const username = localStorage.getItem("chatUsername");
+      if (username) socket.emit("join", username);
 
       const messageInput = document.getElementById("messageInput");
       messageInput.addEventListener("input", () => {
@@ -77,9 +53,8 @@
 
       socket.on("system", (msg) => {
         displayMessage(`System: ${msg}`);
-        if (msg.includes("Connected")) {
+        if (msg.includes("Connected"))
           document.getElementById("statusText").textContent = "";
-        }
       });
 
       function displayMessage(message) {
@@ -90,69 +65,5 @@
           document.getElementById("messageContainer").scrollHeight;
       }
     </script>
-
-    <style>
-      body {
-        background: radial-gradient(circle at center, #0d0d0d, #000000);
-        font-family: "Orbitron", sans-serif;
-        color: #00ffcc;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-      }
-      .hidden {
-        display: none;
-      }
-      #usernameContainer {
-        margin-top: 20%;
-      }
-      #chatContainer {
-        display: flex;
-        flex-direction: column;
-        height: 90vh;
-        width: 90%;
-        margin: auto;
-        border: 2px solid #00ffcc;
-        border-radius: 10px;
-      }
-      #header {
-        padding: 10px;
-        border-bottom: 2px solid #00ffcc;
-      }
-      #statusText {
-        font-style: italic;
-        color: #0ff;
-      }
-      #messageContainer {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px;
-        background-color: rgba(0, 0, 0, 0.7);
-      }
-      #inputContainer {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-top: 2px solid #00ffcc;
-        background-color: rgba(0, 0, 0, 0.9);
-      }
-      #messageInput {
-        flex: 1;
-        padding: 8px;
-        resize: none;
-        overflow-y: hidden;
-        background-color: #111;
-        color: #00ffcc;
-        border: 1px solid #00ffcc;
-      }
-      #sendButton {
-        margin-left: 10px;
-        font-size: 20px;
-        background: none;
-        border: none;
-        color: #00ffcc;
-        cursor: pointer;
-      }
-    </style>
   </body>
 </html>
