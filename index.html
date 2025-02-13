@@ -7,33 +7,18 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="welcomeScreen">
-      <h1>Welcome to Random Chat!</h1>
-      <p>Connect with random people anonymously and have fun!</p>
-      <h3>Rules:</h3>
-      <ul>
-        <li>Be respectful and kind to others.</li>
-        <li>No sharing of personal information.</li>
-        <li>Inappropriate behavior will result in a ban.</li>
-      </ul>
-      <p>Enjoy chatting!</p>
-      <button id="continueBtn">Continue</button>
-    </div>
-
-    <div id="usernameContainer" class="hidden">
+    <button id="darkModeToggle">🌙 Dark Mode</button>
+    <h1>Looking for a partner...</h1>
+    <div id="usernameContainer">
       <input type="text" id="usernameInput" placeholder="Enter Your Username" />
       <button id="startChat">Start Chat</button>
     </div>
-
     <div id="chatContainer" class="hidden">
-      <button id="darkModeToggle">🌙 Dark Mode</button>
-      <h1>Looking for a partner...</h1>
       <div id="chatBox"></div>
       <input type="text" id="messageInput" placeholder="Type a message..." />
       <button id="sendMessage">Send</button>
       <button id="newChat">New Chat</button>
     </div>
-
     <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
     <script src="script.js"></script>
   </body>

@@ -3,23 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
   
     let username;
   
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    const continueBtn = document.getElementById('continueBtn');
-    const usernameContainer = document.getElementById('usernameContainer');
-    const chatContainer = document.getElementById('chatContainer');
-    const chatBox = document.getElementById('chatBox');
-    const messageInput = document.getElementById('messageInput');
-  
-    continueBtn.addEventListener('click', () => {
-      welcomeScreen.classList.add('hidden');
-      usernameContainer.classList.remove('hidden');
-    });
-  
     document.getElementById('startChat').addEventListener('click', () => {
       username = document.getElementById('usernameInput').value.trim();
       if (username) {
-        usernameContainer.classList.add('hidden');
-        chatContainer.classList.remove('hidden');
+        document.getElementById('usernameContainer').classList.add('hidden');
+        document.getElementById('chatContainer').classList.remove('hidden');
         socket.emit('join', username);
       } else {
         alert('Please enter a username');
@@ -27,17 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     document.getElementById('sendMessage').addEventListener('click', () => {
-      const message = messageInput.value.trim();
+      const message = document.getElementById('messageInput').value.trim();
       if (message) {
         socket.emit('sendMessage', { username, message });
-        messageInput.value = '';
+        document.getElementById('messageInput').value = '';
       }
     });
   
     document.getElementById('newChat').addEventListener('click', () => {
       socket.emit('leave');
       socket.emit('join', username);
-      chatBox.innerHTML = '';
+      document.getElementById('chatBox').innerHTML = '';
     });
   
     document.getElementById('darkModeToggle').addEventListener('click', () => {
@@ -45,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     socket.on('message', (data) => {
+      const chatBox = document.getElementById('chatBox');
       const messageItem = document.createElement('div');
       messageItem.textContent = `${data.username}: ${data.message}`;
       chatBox.appendChild(messageItem);
