@@ -6,6 +6,7 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+    overflow: hidden;
   }
   
   /* Chat Container */
@@ -22,6 +23,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
   }
   
   /* Chat Box */
@@ -87,5 +89,22 @@ body {
   .dark-mode {
     background: black;
     color: #00ffcc;
+  }
+  
+  /* Rocket Animation (HUD Style) */
+  .rocket {
+    position: absolute;
+    width: 50px;
+    height: auto;
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 8px #00ffcc);
+    transition: transform 4s linear, opacity 4s ease-in;
+  }
+  
+  .rocket-fly {
+    transform: translate(120vw, -120vh) rotate(45deg);
+    opacity: 0;
   }
   

@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('sendMessage').addEventListener('click', () => {
       const message = document.getElementById('messageInput').value.trim();
       if (message) {
-        // Show user's sent message in chat
+        // Display sent message
         const chatBox = document.getElementById('chatBox');
         const messageItem = document.createElement('div');
         messageItem.classList.add('chat-message', 'you');
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.appendChild(messageItem);
         chatBox.scrollTop = chatBox.scrollHeight;
   
-        // Send message to server
+        // Emit the message to server
         socket.emit('sendMessage', { username, message });
         document.getElementById('messageInput').value = '';
       }
@@ -56,5 +56,25 @@ document.addEventListener("DOMContentLoaded", () => {
       messageItem.style.fontStyle = 'italic';
       document.getElementById('chatBox').appendChild(messageItem);
     });
+  
+    // 🚀 Rocket Animation
+    function launchRocket() {
+      const rocket = document.createElement('img');
+      rocket.src = "https://cdn-icons-png.flaticon.com/512/3213/3213924.png"; // Rocket image
+      rocket.classList.add('rocket');
+  
+      document.body.appendChild(rocket);
+  
+      setTimeout(() => {
+        rocket.classList.add('rocket-fly');
+      }, 100);
+  
+      setTimeout(() => {
+        rocket.remove();
+      }, 4000);
+    }
+  
+    // Launch rocket every 3 minutes
+    setInterval(launchRocket, 180000);
   });
   
