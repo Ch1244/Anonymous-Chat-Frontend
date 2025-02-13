@@ -1,36 +1,26 @@
-body {
-    background-color: #f0f0f0;
-    color: #333;
-    font-family: Arial, sans-serif;
+#welcomeScreen {
+    padding: 20px;
+    margin: 50px auto;
+    max-width: 600px;
     text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   
-  .hidden {
-    display: none;
+  #welcomeScreen h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
   }
   
-  #chatBox {
-    width: 80%;
-    height: 300px;
-    border: 1px solid #ccc;
-    overflow-y: scroll;
-    margin: 20px auto;
-    padding: 10px;
-    background-color: white;
+  #welcomeScreen p, #welcomeScreen ul {
+    margin-bottom: 15px;
+    text-align: left;
   }
   
-  input, button {
-    margin: 5px;
-    padding: 10px;
-  }
-  
-  .dark-mode {
-    background-color: #333;
-    color: white;
-  }
-  
-  .dark-mode #chatBox {
-    background-color: #555;
-    color: white;
+  #welcomeScreen button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-top: 20px;
   }
   
