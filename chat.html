@@ -23,7 +23,7 @@
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
-      const socket = io("https://your-backend-url.onrender.com");
+      const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
       const username = localStorage.getItem("chatUsername");
       if (username) socket.emit("join", username);
 
