@@ -9,8 +9,9 @@ body {
   width: 100vw;
 }
 
-#homeContainer, #usernameContainer {
-  margin-top: 20%;
+.light-mode {
+  background: #f0f0f0;
+  color: #333;
 }
 
 #chatContainer {
@@ -22,11 +23,22 @@ body {
   border: 2px solid #00ffcc;
   border-radius: 10px;
   box-sizing: border-box;
+  position: relative;
+}
+
+#rocketCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 
 #header {
   padding: 10px;
   border-bottom: 2px solid #00ffcc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #statusText {
@@ -67,4 +79,29 @@ body {
   border: none;
   color: #00ffcc;
   cursor: pointer;
+}
+
+.my-message {
+  background-color: #00ffcc;
+  color: #000;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.partner-message {
+  background-color: #333;
+  color: #fff;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 8px;
+  text-align: right;
+}
+
+.system-message {
+  font-style: italic;
+  margin: 5px;
+  padding: 5px;
+  color: #0ff;
 }
