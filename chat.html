@@ -3,28 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anonymous Chat - Futuristic HUD</title>
     <link rel="stylesheet" href="style.css" />
+    <title>Anonymous Chat</title>
   </head>
   <body>
-    <button id="darkModeToggle">🌙 Dark Mode</button>
-    <h1 id="statusText">Looking for a partner...</h1>
-
-    <div id="usernameContainer">
-      <input type="text" id="usernameInput" placeholder="Enter Your Username" />
-      <button id="startChat">Start Chat</button>
+    <div id="chatContainer">
+      <div id="messageContainer"></div>
+      <div id="inputContainer">
+        <textarea
+          id="messageInput"
+          placeholder="Type a message..."
+          rows="1"
+          oninput="autoExpand(this)"
+        ></textarea>
+        <button id="sendButton">➤</button>
+      </div>
     </div>
 
-    <div id="chatContainer" class="hidden">
-      <div id="chatBox"></div>
-      <input type="text" id="messageInput" placeholder="Type a message..." />
-      <button id="sendMessage">Send</button>
-      <button id="newChat">New Chat</button>
-    </div>
-
-    <!-- Rocket animation will be added dynamically -->
-
-    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
+    <script>
+      function autoExpand(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+      }
+    </script>
   </body>
 </html>
