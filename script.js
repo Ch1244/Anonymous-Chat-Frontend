@@ -1,5 +1,18 @@
 const socket = io("https://your-backend-url.onrender.com");
 
+let username;
+
+document.getElementById('startChat').addEventListener('click', () => {
+  username = document.getElementById('usernameInput').value.trim();
+  if (username) {
+    document.getElementById('usernameContainer').classList.add('hidden');
+    document.getElementById('chatContainer').classList.remove('hidden');
+    socket.emit('join', username);
+  } else {
+    alert('Please enter a username');
+  }
+});
+
 const sendButton = document.getElementById('sendButton');
 const messageInput = document.getElementById('messageInput');
 const messageContainer = document.getElementById('messageContainer');
@@ -16,7 +29,7 @@ messageInput.addEventListener('keypress', (e) => {
 function sendMessage() {
   const message = messageInput.value.trim();
   if (message) {
-    socket.emit('message', message);
+    socket.emit('message', { username, message });
     displayMessage(`You: ${message}`);
     messageInput.value = '';
     messageInput.style.height = '40px';
@@ -25,6 +38,13 @@ function sendMessage() {
 
 socket.on('message', (data) => {
   displayMessage(`${data.username}: ${data.message}`);
+});
+
+socket.on('system', (msg) => {
+  displayMessage(`System: ${msg}`);
+  if (msg.includes("Connected")) {
+    document.getElementById('statusText').textContent = ""; // Hide after pairing
+  }
 });
 
 function displayMessage(message) {

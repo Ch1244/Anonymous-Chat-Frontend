@@ -7,7 +7,14 @@
     <title>Anonymous Chat</title>
   </head>
   <body>
-    <div id="chatContainer">
+    <div id="usernameContainer">
+      <h2>Enter your username to start chatting</h2>
+      <input type="text" id="usernameInput" placeholder="Your username" />
+      <button id="startChat">Start Chat</button>
+    </div>
+
+    <div id="chatContainer" class="hidden">
+      <div id="statusText">Looking for a partner...</div>
       <div id="messageContainer"></div>
       <div id="inputContainer">
         <textarea

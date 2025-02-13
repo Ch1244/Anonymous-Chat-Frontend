@@ -8,6 +8,14 @@ body {
     overflow: hidden;
   }
   
+  .hidden {
+    display: none;
+  }
+  
+  #usernameContainer {
+    margin-top: 20%;
+  }
+  
   #chatContainer {
     display: flex;
     flex-direction: column;
@@ -17,6 +25,12 @@ body {
     border: 2px solid #00ffcc;
     border-radius: 10px;
     overflow: hidden;
+  }
+  
+  #statusText {
+    padding: 10px;
+    font-style: italic;
+    color: #0ff;
   }
   
   #messageContainer {
