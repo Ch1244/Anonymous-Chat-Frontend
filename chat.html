@@ -6,9 +6,12 @@
     <link rel="stylesheet" href="style.css" />
     <title>Anonymous Chat</title>
   </head>
-  <body class="dark-mode">
+  <body class="hud dark-mode">
     <div id="chatContainer">
-      <div id="header">Anonymous Chat</div>
+      <div id="header">
+        🛸 Anonymous Chat 🛸
+        <button id="themeToggle">Toggle Mode</button>
+      </div>
       <div id="statusText">Looking for a partner...</div>
       <div id="messageContainer"></div>
       <div id="inputContainer">
@@ -37,6 +40,9 @@
       document
         .getElementById("sendButton")
         .addEventListener("click", sendMessage);
+      document
+        .getElementById("themeToggle")
+        .addEventListener("click", toggleTheme);
 
       function sendMessage() {
         const message = messageInput.value.trim();
@@ -65,6 +71,11 @@
         document.getElementById("messageContainer").appendChild(msg);
         document.getElementById("messageContainer").scrollTop =
           document.getElementById("messageContainer").scrollHeight;
+      }
+
+      function toggleTheme() {
+        document.body.classList.toggle("dark-mode");
+        document.body.classList.toggle("light-mode");
       }
 
       // Rocket animation every 10 seconds
