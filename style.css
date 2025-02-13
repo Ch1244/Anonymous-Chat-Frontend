@@ -1,17 +1,11 @@
-body {
+body.dark-mode {
   background: radial-gradient(circle at center, #0d0d0d, #000000);
   font-family: 'Orbitron', sans-serif;
   color: #00ffcc;
-  text-align: center;
   margin: 0;
   padding: 0;
   height: 100vh;
   width: 100vw;
-}
-
-.light-mode {
-  background: #f0f0f0;
-  color: #333;
 }
 
 #chatContainer {
@@ -36,9 +30,8 @@ body {
 #header {
   padding: 10px;
   border-bottom: 2px solid #00ffcc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
+  font-size: 24px;
 }
 
 #statusText {
