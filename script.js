@@ -1,13 +1,19 @@
 const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
 
 let username = localStorage.getItem('username') || null;
-
 if (!username) {
   username = prompt("Enter your username:");
   localStorage.setItem('username', username);
 }
 
+let partner = null;
+
 socket.emit('join', username);
+
+socket.on('partner', (partnerId) => {
+  partner = partnerId;
+  document.getElementById('messageContainer').innerHTML = `<p>Connected to a partner!</p>`;
+});
 
 socket.on('message', data => {
   const messageContainer = document.getElementById('messageContainer');
@@ -23,8 +29,8 @@ document.getElementById('sendButton').addEventListener('click', sendMessage);
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const message = input.value.trim();
-  if (message) {
-    socket.emit('message', { sender: username, message });
+  if (message && partner) {
+    socket.emit('message', { sender: username, message, partner });
     input.value = '';
     input.style.height = 'auto';
   }
