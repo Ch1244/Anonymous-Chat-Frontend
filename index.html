@@ -3,30 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js" defer></script>
+    <title>Random Chat</title>
   </head>
   <body>
-    <div id="homePage">
-      <h1>🌍 Welcome to Random! 🌍</h1>
-      <p>Please follow the rules and be respectful while chatting.</p>
-      <button id="startChatBtn">Start Chat</button>
-    </div>
-
-    <div id="chatPage" class="hidden">
-      <div id="chatContainer">
-        <div id="messageContainer"></div>
-        <div id="inputContainer">
-          <textarea
-            id="messageInput"
-            placeholder="Type a message..."
-            rows="1"
-          ></textarea>
-          <button id="sendButton">➤</button>
-        </div>
+    <button id="toggleMode">🌙 Dark Mode</button>
+    <h1 id="status">Looking for a partner...</h1>
+    <input id="username" type="text" placeholder="Enter Your Username" />
+    <button id="startChat">Start Chat</button>
+    <div id="chatBox">
+      <div id="messages"></div>
+      <div id="inputBox">
+        <textarea
+          id="messageInput"
+          placeholder="Type a message..."
+          rows="1"
+        ></textarea>
+        <button id="sendButton">➤</button>
       </div>
     </div>
-
-    <script src="script.js"></script>
   </body>
 </html>
