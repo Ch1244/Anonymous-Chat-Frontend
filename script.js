@@ -1,35 +1,36 @@
 const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
-const usernameInput = document.getElementById("username");
-const startButton = document.getElementById("startChat");
 const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
+const sendMessage = document.getElementById("sendMessage");
+const status = document.getElementById("status");
 
-let partnerId = null;
-
-startButton.addEventListener("click", () => {
-    const username = usernameInput.value.trim();
-    if (username) {
-        socket.emit("join", username);
-        usernameInput.disabled = true;
-        startButton.disabled = true;
-    }
-});
-
-socket.on("partner", (partner) => {
-    partnerId = partner.id;
-    chatBox.innerHTML += `<p>System: Connected to ${partner.name}</p>`;
-});
-
-sendButton.addEventListener("click", () => {
-    const message = messageInput.value.trim();
-    if (message && partnerId) {
-        socket.emit("message", { to: partnerId, text: message });
-        chatBox.innerHTML += `<p>You: ${message}</p>`;
-        messageInput.value = "";
-    }
-});
+const username = localStorage.getItem("chatUsername");
+socket.emit("join", username);
 
 socket.on("message", (data) => {
-    chatBox.innerHTML += `<p>${data.from}: ${data.text}</p>`;
+  const msg = document.createElement("div");
+  msg.textContent = `${data.from}: ${data.message}`;
+  msg.classList.add(data.from === username ? "my-message" : "partner-message");
+  chatBox.appendChild(msg);
+});
+
+sendMessage.addEventListener("click", sendChat);
+messageInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendChat();
+});
+
+function sendChat() {
+  const message = messageInput.value.trim();
+  if (message) {
+    socket.emit("message", message);
+    messageInput.value = "";
+  }
+}
+
+socket.on("partner", (partnerId) => {
+  if (partnerId) {
+    status.textContent = `Connected with ${partnerId}`;
+  } else {
+    status.textContent = "Looking for a partner...";
+  }
 });
