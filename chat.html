@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
   </head>
   <body>
     <h2 id="status">Looking for a partner...</h2>
     <div id="chatBox"></div>
-    <div class="input-container">
+    <div id="messageContainer">
       <input type="text" id="messageInput" placeholder="Type a message..." />
-      <button id="sendMessage">➤</button>
+      <button id="sendButton">➤</button>
     </div>
 
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
