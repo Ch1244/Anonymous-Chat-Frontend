@@ -3,19 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Random Chat</title>
+    <title>Chat</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2 id="status">Looking for a partner...</h2>
-    <div id="chatBox"></div>
-    <div id="messageContainer">
-      <input type="text" id="messageInput" placeholder="Type a message..." />
-      <button id="sendMessage">➤</button>
-      <button id="newChat">🔄 New Chat</button>
+    <div id="chat-container">
+      <div id="messages"></div>
+      <input type="text" id="message-input" placeholder="Type a message..." />
+      <button id="send-button">➤</button>
     </div>
 
-    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
