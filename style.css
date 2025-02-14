@@ -1,21 +1,78 @@
-body.hud {
-  font-family: 'Orbitron', sans-serif;
-  background: radial-gradient(circle at center, #0d0d0d, #000000);
-  color: #00ffcc;
-  margin: 0;
-  padding: 0;
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #000;
+  color: #0f0;
+}
+
+.hidden {
+  display: none;
+}
+
+#homePage {
   height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* HUD box shadow for all pages */
-#homeContainer, #usernameContainer, #chatContainer {
-  box-shadow: 0 0 20px #00ffcc;
-  border: 2px solid #00ffcc;
-  border-radius: 10px;
-  padding: 20px;
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+#chatContainer {
+  width: 90%;
+  height: 80vh;
   margin: 20px auto;
+  border: 3px solid #0f0;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  background-color: #000;
+  overflow-y: auto;
 }
 
-/* Other styles remain the same */
+#messageContainer {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.message {
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 15px;
+  color: #000;
+  background-color: #0f0;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.message.self {
+  background-color: #00f;
+  color: #fff;
+  align-self: flex-end;
+}
+
+#inputContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+#messageInput {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  resize: none;
+  overflow-y: hidden;
+}
+
+#sendButton {
+  margin-left: 8px;
+  padding: 8px 12px;
+  font-size: 20px;
+}
