@@ -13,45 +13,37 @@ document.addEventListener("DOMContentLoaded", () => {
     statusText.textContent = "Looking for a partner...";
   }
 
-  socket.on("paired", (data) => {
-    statusText.textContent = `Connected with ${data.partnerName}`;
-    chatBox.innerHTML += `<p class="system">System: Connected to ${data.partnerName}</p>`;
-  });
-
-  socket.on("waiting", () => {
-    statusText.textContent = "Looking for a partner...";
-  });
-
-  if (sendButton && messageInput) {
-    sendButton.addEventListener("click", sendMessage);
-    messageInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
-  }
-
-  function sendMessage() {
+  sendButton.addEventListener("click", () => {
     const message = messageInput.value.trim();
     if (message) {
       socket.emit("sendMessage", { message, username });
       appendMessage("You", message);
       messageInput.value = "";
     }
-  }
+  });
+
+  messageInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendButton.click();
+  });
+
+  socket.on("paired", (data) => {
+    statusText.textContent = `Connected with ${data.partnerName}`;
+    appendMessage("System", `Connected to ${data.partnerName}`);
+  });
 
   socket.on("receiveMessage", (data) => {
     appendMessage(data.sender, data.message);
   });
 
-  function appendMessage(sender, message) {
-    const messageElement = document.createElement("p");
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-    messageElement.classList.add(sender === "You" ? "you" : "partner");
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
   socket.on("partnerDisconnected", () => {
     statusText.textContent = "Your partner has left.";
     appendMessage("System", "Your partner has left.");
   });
+
+  function appendMessage(sender, message) {
+    const messageElement = document.createElement("p");
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 });
