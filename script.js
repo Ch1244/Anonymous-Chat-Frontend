@@ -1,52 +1,36 @@
-const socket = io('https://anonymous-chat-backend-jquo.onrender.com');
+const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
 
-document.addEventListener('DOMContentLoaded', () => {
-  const username = localStorage.getItem('username');
-  if (!username) {
-    window.location.href = 'username.html';
-    return;
-  }
+let username = localStorage.getItem('username') || null;
 
-  const status = document.getElementById('status');
+if (!username) {
+  username = prompt("Enter your username:");
+  localStorage.setItem('username', username);
+}
+
+socket.emit('join', username);
+
+socket.on('message', data => {
   const messageContainer = document.getElementById('messageContainer');
-  const messageInput = document.getElementById('messageInput');
-  const sendButton = document.getElementById('sendButton');
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add(data.sender === username ? 'myMessage' : 'otherMessage');
+  messageDiv.textContent = `${data.sender}: ${data.message}`;
+  messageContainer.appendChild(messageDiv);
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+});
 
-  sendButton.addEventListener('click', sendMessage);
+document.getElementById('sendButton').addEventListener('click', sendMessage);
 
-  function sendMessage() {
-    const message = messageInput.value.trim();
-    if (message) {
-      socket.emit('message', { username, message });
-      appendMessage('You', message, 'right');
-      messageInput.value = '';
-      messageInput.style.height = 'auto';
-    }
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const message = input.value.trim();
+  if (message) {
+    socket.emit('message', { sender: username, message });
+    input.value = '';
+    input.style.height = 'auto';
   }
+}
 
-  function appendMessage(sender, message, side) {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', side);
-    messageElement.textContent = `${sender}: ${message}`;
-    messageContainer.appendChild(messageElement);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
-  }
-
-  socket.on('connect', () => {
-    socket.emit('join', username);
-    status.textContent = 'Connected to a partner';
-  });
-
-  socket.on('message', (data) => {
-    appendMessage(data.username, data.message, 'left');
-  });
-
-  socket.on('disconnect', () => {
-    status.textContent = 'Your partner has left.';
-  });
-
-  function autoExpand(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-  }
+document.getElementById('messageInput').addEventListener('input', function () {
+  this.style.height = 'auto';
+  this.style.height = this.scrollHeight + 'px';
 });
