@@ -1,31 +1,35 @@
-const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
-
+const socket = io("https://your-backend-url.onrender.com");
+const usernameInput = document.getElementById("username");
+const startButton = document.getElementById("startChat");
+const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
-const messageList = document.getElementById("chatBox");
-const sendButton = document.getElementById("sendMessage");
+const sendButton = document.getElementById("sendButton");
 
-socket.on("partnerConnected", () => {
-  appendMessage("System: Connected to partner");
+let partnerId = null;
+
+startButton.addEventListener("click", () => {
+    const username = usernameInput.value.trim();
+    if (username) {
+        socket.emit("join", username);
+        usernameInput.disabled = true;
+        startButton.disabled = true;
+    }
 });
 
-socket.on("message", (data) => {
-  appendMessage(`Partner: ${data}`);
-});
-
-socket.on("partnerDisconnected", () => {
-  appendMessage("System: Your partner has left.");
+socket.on("partner", (partner) => {
+    partnerId = partner.id;
+    chatBox.innerHTML += `<p>System: Connected to ${partner.name}</p>`;
 });
 
 sendButton.addEventListener("click", () => {
-  const msg = messageInput.value;
-  appendMessage(`You: ${msg}`);
-  socket.emit("message", msg);
-  messageInput.value = "";
+    const message = messageInput.value.trim();
+    if (message && partnerId) {
+        socket.emit("message", { to: partnerId, text: message });
+        chatBox.innerHTML += `<p>You: ${message}</p>`;
+        messageInput.value = "";
+    }
 });
 
-function appendMessage(msg) {
-  const messageItem = document.createElement("div");
-  messageItem.textContent = msg;
-  messageList.appendChild(messageItem);
-  messageList.scrollTop = messageList.scrollHeight;
-}
+socket.on("message", (data) => {
+    chatBox.innerHTML += `<p>${data.from}: ${data.text}</p>`;
+});
