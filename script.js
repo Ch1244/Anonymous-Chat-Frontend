@@ -25,28 +25,33 @@ socket.on("waiting", () => {
   statusText.textContent = "Looking for a partner...";
 });
 
-sendButton.addEventListener("click", () => {
+sendButton.addEventListener("click", sendMessage);
+messageInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+
+function sendMessage() {
   const message = messageInput.value.trim();
   if (message) {
-    socket.emit("sendMessage", message);
-    chatBox.innerHTML += `<p class="you"><strong>You:</strong> ${message}</p>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
+    socket.emit("sendMessage", { message, username });
+    appendMessage("You", message);
     messageInput.value = "";
   }
-});
-
-messageInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendButton.click();
-  }
-});
+}
 
 socket.on("receiveMessage", (data) => {
-  chatBox.innerHTML += `<p class="partner"><strong>${data.sender}:</strong> ${data.message}</p>`;
-  chatBox.scrollTop = chatBox.scrollHeight;
+  appendMessage(data.sender, data.message);
 });
+
+function appendMessage(sender, message) {
+  const messageElement = document.createElement("p");
+  messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+  messageElement.classList.add(sender === "You" ? "you" : "partner");
+  chatBox.appendChild(messageElement);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
 socket.on("partnerDisconnected", () => {
   statusText.textContent = "Your partner has left.";
-  chatBox.innerHTML += `<p class="system">Your partner has left.</p>`;
+  appendMessage("System", "Your partner has left.");
 });
