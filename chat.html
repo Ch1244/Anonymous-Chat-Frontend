@@ -3,31 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
-    <title>Anonymous Chat</title>
   </head>
-  <body class="hud dark-mode">
+  <body>
     <div id="chatContainer">
-      <div id="header">
-        🛸 Anonymous Chat 🛸
-        <button id="themeToggle">Toggle Mode</button>
-      </div>
-      <div id="statusText">Looking for a partner...</div>
+      <h2 id="status">Looking for a partner...</h2>
       <div id="messageContainer"></div>
       <div id="inputContainer">
         <textarea
           id="messageInput"
           placeholder="Type a message..."
           rows="1"
+          oninput="autoExpand(this)"
         ></textarea>
         <button id="sendButton">➤</button>
       </div>
-      <canvas id="rocketCanvas"></canvas>
     </div>
 
-    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-    <script>
-      // JavaScript for chat functionality remains the same
-    </script>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="chat.js"></script>
   </body>
 </html>

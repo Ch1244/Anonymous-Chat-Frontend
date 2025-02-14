@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
     <title>Enter Username</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="hud dark-mode">
-    <div id="usernameContainer">
-      <h2>Enter your username to start chatting</h2>
-      <input type="text" id="usernameInput" placeholder="Your username" />
-      <button onclick="goToChat()">Continue</button>
+  <body>
+    <div class="centered">
+      <h2>Enter Your Username</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <button onclick="startChat()">Start Chat</button>
     </div>
 
     <script>
-      function goToChat() {
-        const username = document.getElementById("usernameInput").value.trim();
+      function startChat() {
+        const username = document.getElementById("username").value.trim();
         if (username) {
-          localStorage.setItem("chatUsername", username);
+          localStorage.setItem("username", username);
           window.location.href = "chat.html";
         } else {
           alert("Please enter a username");

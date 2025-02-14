@@ -1,82 +1,59 @@
 body {
-  background-color: black;
-  color: #00ffcc;
+  background-color: #000;
+  color: #0f0;
   font-family: Arial, sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
 }
 
-#toggleMode {
-  margin: 10px;
-  padding: 8px 16px;
-  background: transparent;
-  border: 2px solid #00ffcc;
-  color: #00ffcc;
-  border-radius: 8px;
-  cursor: pointer;
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 }
 
-#status {
-  font-size: 24px;
-  margin: 20px 0;
-}
-
-input, button, textarea {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 2px solid #00ffcc;
-  background: transparent;
-  color: #00ffcc;
-  font-size: 16px;
-}
-
-#chatBox {
-  display: none;
-  margin: 20px auto;
-  width: 90%;
-  height: 80vh;
-  border: 3px solid #00ffcc;
-  padding: 10px;
+#chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px;
   box-sizing: border-box;
-  border-radius: 15px;
 }
 
-#messages {
-  height: 70%;
+#messageContainer {
+  flex: 1;
   overflow-y: auto;
-  text-align: left;
+  border: 2px solid #0f0;
+  border-radius: 10px;
+  padding: 10px;
   margin-bottom: 10px;
 }
 
-#inputBox {
+#inputContainer {
   display: flex;
   align-items: center;
 }
 
 #messageInput {
   flex: 1;
+  padding: 10px;
+  border-radius: 8px;
   resize: none;
   overflow-y: hidden;
   min-height: 40px;
   max-height: 100px;
-  padding: 10px;
 }
 
 #sendButton {
   margin-left: 10px;
+  padding: 8px 16px;
   font-size: 20px;
-  padding: 10px 15px;
+  background-color: #0f0;
+  color: #000;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-}
-
-.dark-mode {
-  background-color: #0d0d0d;
-  color: #00ffcc;
-}
-
-.light-mode {
-  background-color: #f0f0f0;
-  color: #333;
 }

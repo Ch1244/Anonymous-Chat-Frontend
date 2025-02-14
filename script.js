@@ -1,67 +1,52 @@
-const socket = io("https://your-backend-url.onrender.com");
+const socket = io('https://anonymous-chat-backend-jquo.onrender.com');
 
-const toggleButton = document.getElementById('toggleMode');
-const status = document.getElementById('status');
-const usernameInput = document.getElementById('username');
-const startChatButton = document.getElementById('startChat');
-const chatBox = document.getElementById('chatBox');
-const messages = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
-const sendButton = document.getElementById('sendButton');
+document.addEventListener('DOMContentLoaded', () => {
+  const username = localStorage.getItem('username');
+  if (!username) {
+    window.location.href = 'username.html';
+    return;
+  }
 
-let username = '';
+  const status = document.getElementById('status');
+  const messageContainer = document.getElementById('messageContainer');
+  const messageInput = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendButton');
 
-toggleButton.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  document.body.classList.toggle('light-mode');
-});
+  sendButton.addEventListener('click', sendMessage);
 
-startChatButton.addEventListener('click', () => {
-  username = usernameInput.value.trim();
-  if (username) {
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.emit('message', { username, message });
+      appendMessage('You', message, 'right');
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+    }
+  }
+
+  function appendMessage(sender, message, side) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', side);
+    messageElement.textContent = `${sender}: ${message}`;
+    messageContainer.appendChild(messageElement);
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+  }
+
+  socket.on('connect', () => {
     socket.emit('join', username);
-    status.textContent = 'Looking for a partner...';
-    chatBox.style.display = 'block';
-    usernameInput.style.display = 'none';
-    startChatButton.style.display = 'none';
+    status.textContent = 'Connected to a partner';
+  });
+
+  socket.on('message', (data) => {
+    appendMessage(data.username, data.message, 'left');
+  });
+
+  socket.on('disconnect', () => {
+    status.textContent = 'Your partner has left.';
+  });
+
+  function autoExpand(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
   }
-});
-
-sendButton.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-function sendMessage() {
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit('message', { username, message });
-    displayMessage(`You: ${message}`, 'right');
-    messageInput.value = '';
-    messageInput.style.height = '40px';
-  }
-}
-
-socket.on('message', (data) => {
-  displayMessage(`${data.username}: ${data.message}`, 'left');
-});
-
-socket.on('partnerLeft', () => {
-  displayMessage('Partner has left the chat.', 'center');
-});
-
-function displayMessage(text, side) {
-  const msg = document.createElement('div');
-  msg.textContent = text;
-  msg.classList.add('message', side);
-  messages.appendChild(msg);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-messageInput.addEventListener('input', () => {
-  messageInput.style.height = '40px';
-  messageInput.style.height = messageInput.scrollHeight + 'px';
 });
