@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to Random Chat</title>
+    <title>Welcome to Random Chat!</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="centered">
+    <div class="welcome-container">
       <h1>🌍 Welcome to Random Chat! 🌍</h1>
       <p>Rules and Guidelines:</p>
       <ul>
@@ -15,13 +15,7 @@
         <li>No sharing of personal information.</li>
         <li>Enjoy chatting with random people!</li>
       </ul>
-      <button onclick="goToPage('username.html')">Start Chat</button>
+      <button onclick="location.href='chat.html'">Start Chat</button>
     </div>
-
-    <script>
-      function goToPage(page) {
-        window.location.href = page;
-      }
-    </script>
   </body>
 </html>

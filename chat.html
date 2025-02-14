@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js" defer></script>
   </head>
   <body>
-    <h1>Looking for a partner...</h1>
+    <h2 id="status">Looking for a partner...</h2>
     <div id="chatBox"></div>
     <div id="inputContainer">
-      <textarea id="messageInput" placeholder="Type a message..."></textarea>
+      <textarea
+        id="messageInput"
+        placeholder="Type a message..."
+        rows="1"
+      ></textarea>
       <button id="sendButton">➤</button>
     </div>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script src="script.js"></script>
   </body>
 </html>
