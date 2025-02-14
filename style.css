@@ -1,94 +1,67 @@
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
   background-color: black;
   color: #00ffff; /* Blue neon */
-  margin: 0;
-  padding: 0;
-}
-
-.container {
+  font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
 }
 
-h1, h2 {
-  color: #00ffff; /* Blue neon */
-}
-
-button, input {
-  padding: 10px;
-  margin: 10px;
-  border: 2px solid #00ffff; /* Blue neon */
-  background-color: transparent;
+h1, h2, p {
   color: #00ffff;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
-button:hover {
-  background-color: #00ffff;
-  color: black;
+.chat-container {
+  border: 2px solid #00ffff;
+  padding: 20px;
+  margin-top: 20px;
+  width: 90%;
+  max-width: 600px;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 15px #00ffff;
 }
 
 .chat-box {
+  flex: 1;
   border: 2px solid #00ffff;
-  width: 90%;
-  max-width: 600px;
-  height: 60%;
-  margin: 20px auto;
   padding: 10px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 10px;
+  box-shadow: 0 0 10px #00ffff;
 }
 
-.message-input-container {
+.input-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  gap: 10px;
 }
 
-#messageInput {
+input[type="text"] {
   flex: 1;
   padding: 10px;
   border: 2px solid #00ffff;
   background-color: transparent;
   color: #00ffff;
-  border-radius: 5px;
+  box-shadow: 0 0 10px #00ffff;
   outline: none;
 }
 
-#sendButton {
-  padding: 10px 20px;
-  margin-left: 10px;
+button {
+  padding: 10px 15px;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+button:hover {
   background-color: #00ffff;
   color: black;
-  border: 2px solid #00ffff;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#sendButton:hover {
-  background-color: transparent;
-  color: #00ffff;
-}
-
-.new-chat-button {
-  background-color: #00ffff;
-  color: black;
-  border: 2px solid #00ffff;
-  border-radius: 5px;
-  padding: 10px 20px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.new-chat-button:hover {
-  background-color: transparent;
-  color: #00ffff;
 }
