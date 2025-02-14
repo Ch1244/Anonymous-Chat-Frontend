@@ -7,14 +7,14 @@ const statusText = document.getElementById("status");
 
 let username = null;
 
-window.onload = () => {
+window.addEventListener("load", () => {
   username = localStorage.getItem("username") || prompt("Enter your username:");
   if (username) {
     localStorage.setItem("username", username);
     socket.emit("joinChat", username);
-    statusText.textContent = `Looking for a partner...`;
+    statusText.textContent = "Looking for a partner...";
   }
-};
+});
 
 socket.on("paired", (data) => {
   statusText.textContent = `Connected with ${data.partnerName}`;
@@ -29,12 +29,20 @@ sendButton.addEventListener("click", () => {
   const message = messageInput.value.trim();
   if (message) {
     socket.emit("sendMessage", message);
+    chatBox.innerHTML += `<p class="you"><strong>You:</strong> ${message}</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
     messageInput.value = "";
   }
 });
 
+messageInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendButton.click();
+  }
+});
+
 socket.on("receiveMessage", (data) => {
-  chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
+  chatBox.innerHTML += `<p class="partner"><strong>${data.sender}:</strong> ${data.message}</p>`;
   chatBox.scrollTop = chatBox.scrollHeight;
 });
 
