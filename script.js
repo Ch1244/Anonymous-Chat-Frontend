@@ -1,58 +1,36 @@
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
+const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+const chatBox = document.getElementById("chatBox");
+const messageInput = document.getElementById("messageInput");
+const sendMessage = document.getElementById("sendMessage");
+const status = document.getElementById("status");
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://randomchatt.netlify.app",
-    methods: ["GET", "POST"],
-  },
+const username = localStorage.getItem("chatUsername");
+socket.emit("join", username);
+
+socket.on("message", (data) => {
+  const msg = document.createElement("div");
+  msg.textContent = `${data.from}: ${data.message}`;
+  msg.classList.add(data.from === username ? "my-message" : "partner-message");
+  chatBox.appendChild(msg);
 });
 
-let waitingUser = null;
-
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  socket.on("join", (username) => {
-    socket.username = username;
-    if (waitingUser) {
-      // Pair the new user with the waiting user
-      io.to(socket.id).emit("message", { from: "System", message: `Connected to ${waitingUser.username}` });
-      io.to(waitingUser.id).emit("message", { from: "System", message: `Connected to ${socket.username}` });
-
-      socket.partner = waitingUser.id;
-      waitingUser.partner = socket.id;
-
-      io.to(socket.id).emit("partner", waitingUser.id);
-      io.to(waitingUser.id).emit("partner", socket.id);
-
-      waitingUser = null;
-    } else {
-      waitingUser = socket;
-    }
-  });
-
-  socket.on("message", (message) => {
-    if (socket.partner) {
-      io.to(socket.partner).emit("message", { from: socket.username, message });
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-    if (waitingUser && waitingUser.id === socket.id) {
-      waitingUser = null;
-    }
-    if (socket.partner) {
-      io.to(socket.partner).emit("message", { from: "System", message: "Your partner has disconnected." });
-      io.to(socket.partner).emit("partner", null);
-    }
-  });
+sendMessage.addEventListener("click", sendChat);
+messageInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendChat();
 });
 
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
+function sendChat() {
+  const message = messageInput.value.trim();
+  if (message) {
+    socket.emit("message", message);
+    messageInput.value = "";
+  }
+}
+
+socket.on("partner", (partnerId) => {
+  if (partnerId) {
+    status.textContent = `Connected with ${partnerId}`;
+  } else {
+    status.textContent = "Looking for a partner...";
+  }
 });

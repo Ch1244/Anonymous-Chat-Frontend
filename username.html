@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="centered">
-      <h2>Enter Your Username</h2>
-      <input type="text" id="username" placeholder="Username" />
+    <div class="username-container">
+      <h2>Enter Your Username to Start Chatting</h2>
+      <input type="text" id="usernameInput" placeholder="Enter your username" />
       <button onclick="startChat()">Start Chat</button>
     </div>
 
     <script>
       function startChat() {
-        const username = document.getElementById("username").value.trim();
+        const username = document.getElementById("usernameInput").value.trim();
         if (username) {
-          localStorage.setItem("username", username);
+          localStorage.setItem("chatUsername", username);
           window.location.href = "chat.html";
         } else {
           alert("Please enter a username");
