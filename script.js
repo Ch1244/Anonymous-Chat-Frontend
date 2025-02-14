@@ -12,7 +12,7 @@ socket.emit('join', username);
 
 socket.on('partner', (partnerId) => {
   partner = partnerId;
-  document.getElementById('messageContainer').innerHTML = `<p>Connected to a partner!</p>`;
+  document.getElementById('status').textContent = "Connected to a partner!";
 });
 
 socket.on('message', data => {
