@@ -12,6 +12,7 @@ socket.on("message", (data) => {
   msg.textContent = `${data.from}: ${data.message}`;
   msg.classList.add(data.from === username ? "my-message" : "partner-message");
   chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
 });
 
 sendMessage.addEventListener("click", sendChat);
@@ -22,14 +23,19 @@ messageInput.addEventListener("keypress", (e) => {
 function sendChat() {
   const message = messageInput.value.trim();
   if (message) {
-    socket.emit("message", message);
+    socket.emit("message", { from: username, message });
+    const msg = document.createElement("div");
+    msg.textContent = `You: ${message}`;
+    msg.classList.add("my-message");
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
     messageInput.value = "";
   }
 }
 
 socket.on("partner", (partnerId) => {
   if (partnerId) {
-    status.textContent = `Connected with ${partnerId}`;
+    status.textContent = `System: Connected to ${partnerId}`;
   } else {
     status.textContent = "Looking for a partner...";
   }
