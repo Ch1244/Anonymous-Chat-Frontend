@@ -3,21 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
-    <title>Welcome to Random Chat</title>
   </head>
-  <body class="hud dark-mode">
-    <div id="homeContainer">
-      <h1>🌍 Welcome to Random Chat! 🌍</h1>
-      <p>Connect with strangers anonymously and have fun!</p>
-      <h3>Rules:</h3>
-      <ul>
-        <li>Be respectful to others.</li>
-        <li>No sharing of personal information.</li>
-        <li>No harassment, hate speech, or illegal content.</li>
-        <li>Enjoy your time and make new friends!</li>
-      </ul>
-      <button onclick="window.location.href='username.html'">Start Chat</button>
+  <body>
+    <div id="homePage">
+      <h1>🌍 Welcome to Random! 🌍</h1>
+      <p>Please follow the rules and be respectful while chatting.</p>
+      <button id="startChatBtn">Start Chat</button>
     </div>
+
+    <div id="chatPage" class="hidden">
+      <div id="chatContainer">
+        <div id="messageContainer"></div>
+        <div id="inputContainer">
+          <textarea
+            id="messageInput"
+            placeholder="Type a message..."
+            rows="1"
+          ></textarea>
+          <button id="sendButton">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
   </body>
 </html>

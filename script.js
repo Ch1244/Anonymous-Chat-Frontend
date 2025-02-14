@@ -1,61 +1,39 @@
-const socket = io("https://your-backend-url.onrender.com");
+document.addEventListener('DOMContentLoaded', () => {
+  const homePage = document.getElementById('homePage');
+  const chatPage = document.getElementById('chatPage');
+  const startChatBtn = document.getElementById('startChatBtn');
+  const messageInput = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendButton');
+  const messageContainer = document.getElementById('messageContainer');
 
-let username;
+  startChatBtn.addEventListener('click', () => {
+    homePage.classList.add('hidden');
+    chatPage.classList.remove('hidden');
+  });
 
-document.getElementById('startChat').addEventListener('click', () => {
-  username = document.getElementById('usernameInput').value.trim();
-  if (username) {
-    document.getElementById('usernameContainer').classList.add('hidden');
-    document.getElementById('chatContainer').classList.remove('hidden');
-    socket.emit('join', username);
-  } else {
-    alert('Please enter a username');
+  sendButton.addEventListener('click', sendMessage);
+  messageInput.addEventListener('input', autoExpand);
+
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
+      displayMessage(message, 'self');
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+    }
   }
-});
 
-const sendButton = document.getElementById('sendButton');
-const messageInput = document.getElementById('messageInput');
-const messageContainer = document.getElementById('messageContainer');
-
-// Send message
-sendButton.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
+  function displayMessage(msg, type) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message');
+    if (type === 'self') msgDiv.classList.add('self');
+    msgDiv.innerText = msg;
+    messageContainer.appendChild(msgDiv);
+    messageContainer.scrollTop = messageContainer.scrollHeight;
   }
-});
 
-function sendMessage() {
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit('message', { username, message });
-    displayMessage(`You: ${message}`);
-    messageInput.value = '';
-    messageInput.style.height = '40px';
+  function autoExpand() {
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
   }
-}
-
-socket.on('message', (data) => {
-  displayMessage(`${data.username}: ${data.message}`);
-});
-
-socket.on('system', (msg) => {
-  displayMessage(`System: ${msg}`);
-  if (msg.includes("Connected")) {
-    document.getElementById('statusText').textContent = ""; // Hide after pairing
-  }
-});
-
-function displayMessage(message) {
-  const msg = document.createElement('div');
-  msg.textContent = message;
-  messageContainer.appendChild(msg);
-  messageContainer.scrollTop = messageContainer.scrollHeight;
-}
-
-// Auto-expand input
-messageInput.addEventListener('input', () => {
-  messageInput.style.height = 'auto';
-  messageInput.style.height = `${messageInput.scrollHeight}px`;
 });
