@@ -1,36 +1,40 @@
 const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+
+let username = localStorage.getItem('username') || prompt("Enter your username:");
+localStorage.setItem('username', username);
+
 const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
-const sendMessage = document.getElementById("sendMessage");
-const status = document.getElementById("status");
+const sendButton = document.getElementById("sendButton");
+const statusText = document.getElementById("statusText");
 
-const username = localStorage.getItem("chatUsername");
-socket.emit("join", username);
+// When connected, remove "Looking for a partner..." and show connected partner
+socket.on("connect", () => {
+    statusText.textContent = "Looking for a partner...";
+    socket.emit("join", username);
+});
+
+socket.on("partnerConnected", (partnerName) => {
+    statusText.textContent = `Connected with ${partnerName}`;
+    chatBox.innerHTML = `<p class="system">Connected to ${partnerName}</p>`;
+});
 
 socket.on("message", (data) => {
-  const msg = document.createElement("div");
-  msg.textContent = `${data.from}: ${data.message}`;
-  msg.classList.add(data.from === username ? "my-message" : "partner-message");
-  chatBox.appendChild(msg);
+    chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
 });
 
-sendMessage.addEventListener("click", sendChat);
-messageInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendChat();
+sendButton.addEventListener("click", () => {
+    const message = messageInput.value.trim();
+    if (message) {
+        socket.emit("message", { sender: username, message: message });
+        chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+        messageInput.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 });
 
-function sendChat() {
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit("message", message);
-    messageInput.value = "";
-  }
-}
-
-socket.on("partner", (partnerId) => {
-  if (partnerId) {
-    status.textContent = `Connected with ${partnerId}`;
-  } else {
-    status.textContent = "Looking for a partner...";
-  }
+socket.on("partnerDisconnected", () => {
+    statusText.textContent = "Your partner has left.";
+    chatBox.innerHTML += `<p class="system">Your partner has left.</p>`;
 });
