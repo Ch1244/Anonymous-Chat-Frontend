@@ -1,42 +1,31 @@
 const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
-const chatBox = document.getElementById("chatBox");
-const messageInput = document.getElementById("messageInput");
-const sendMessage = document.getElementById("sendMessage");
-const status = document.getElementById("status");
 
-const username = localStorage.getItem("chatUsername");
-socket.emit("join", username);
+const messageInput = document.getElementById("messageInput");
+const messageList = document.getElementById("chatBox");
+const sendButton = document.getElementById("sendMessage");
+
+socket.on("partnerConnected", () => {
+  appendMessage("System: Connected to partner");
+});
 
 socket.on("message", (data) => {
-  const msg = document.createElement("div");
-  msg.textContent = `${data.from}: ${data.message}`;
-  msg.classList.add(data.from === username ? "my-message" : "partner-message");
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  appendMessage(`Partner: ${data}`);
 });
 
-sendMessage.addEventListener("click", sendChat);
-messageInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendChat();
+socket.on("partnerDisconnected", () => {
+  appendMessage("System: Your partner has left.");
 });
 
-function sendChat() {
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit("message", { from: username, message });
-    const msg = document.createElement("div");
-    msg.textContent = `You: ${message}`;
-    msg.classList.add("my-message");
-    chatBox.appendChild(msg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    messageInput.value = "";
-  }
+sendButton.addEventListener("click", () => {
+  const msg = messageInput.value;
+  appendMessage(`You: ${msg}`);
+  socket.emit("message", msg);
+  messageInput.value = "";
+});
+
+function appendMessage(msg) {
+  const messageItem = document.createElement("div");
+  messageItem.textContent = msg;
+  messageList.appendChild(messageItem);
+  messageList.scrollTop = messageList.scrollHeight;
 }
-
-socket.on("partner", (partnerId) => {
-  if (partnerId) {
-    status.textContent = `System: Connected to ${partnerId}`;
-  } else {
-    status.textContent = "Looking for a partner...";
-  }
-});
