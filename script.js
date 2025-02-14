@@ -1,59 +1,57 @@
-const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+document.addEventListener("DOMContentLoaded", () => {
+  const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
 
-const chatBox = document.getElementById("chatBox");
-const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendMessage");
-const statusText = document.getElementById("status");
+  const chatBox = document.getElementById("chatBox");
+  const messageInput = document.getElementById("messageInput");
+  const sendButton = document.getElementById("sendMessage");
+  const statusText = document.getElementById("status");
 
-let username = null;
-
-window.addEventListener("load", () => {
-  username = localStorage.getItem("username") || prompt("Enter your username:");
+  let username = localStorage.getItem("username") || prompt("Enter your username:");
   if (username) {
     localStorage.setItem("username", username);
     socket.emit("joinChat", username);
-    if (statusText) statusText.textContent = "Looking for a partner...";
+    statusText.textContent = "Looking for a partner...";
   }
-});
 
-socket.on("paired", (data) => {
-  if (statusText) statusText.textContent = `Connected with ${data.partnerName}`;
-  if (chatBox) chatBox.innerHTML += `<p class="system">System: Connected to ${data.partnerName}</p>`;
-});
+  socket.on("paired", (data) => {
+    statusText.textContent = `Connected with ${data.partnerName}`;
+    chatBox.innerHTML += `<p class="system">System: Connected to ${data.partnerName}</p>`;
+  });
 
-socket.on("waiting", () => {
-  if (statusText) statusText.textContent = "Looking for a partner...";
-});
+  socket.on("waiting", () => {
+    statusText.textContent = "Looking for a partner...";
+  });
 
-if (sendButton) sendButton.addEventListener("click", sendMessage);
-if (messageInput) messageInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
-});
-
-function sendMessage() {
-  const message = messageInput?.value.trim();
-  if (message) {
-    socket.emit("sendMessage", { message, username });
-    appendMessage("You", message);
-    if (messageInput) messageInput.value = "";
+  if (sendButton && messageInput) {
+    sendButton.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
   }
-}
 
-socket.on("receiveMessage", (data) => {
-  appendMessage(data.sender, data.message);
-});
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.emit("sendMessage", { message, username });
+      appendMessage("You", message);
+      messageInput.value = "";
+    }
+  }
 
-function appendMessage(sender, message) {
-  if (chatBox) {
+  socket.on("receiveMessage", (data) => {
+    appendMessage(data.sender, data.message);
+  });
+
+  function appendMessage(sender, message) {
     const messageElement = document.createElement("p");
     messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
     messageElement.classList.add(sender === "You" ? "you" : "partner");
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
-}
 
-socket.on("partnerDisconnected", () => {
-  if (statusText) statusText.textContent = "Your partner has left.";
-  appendMessage("System", "Your partner has left.");
+  socket.on("partnerDisconnected", () => {
+    statusText.textContent = "Your partner has left.";
+    appendMessage("System", "Your partner has left.");
+  });
 });
