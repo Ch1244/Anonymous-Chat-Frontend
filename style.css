@@ -7,8 +7,32 @@ body {
   text-align: center;
 }
 
-h1 {
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+h1, h2 {
   margin: 20px 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #0f0;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 #chatContainer {

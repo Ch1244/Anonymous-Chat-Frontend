@@ -2,8 +2,7 @@ const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
 
 let username = localStorage.getItem('username') || null;
 if (!username) {
-  username = prompt("Enter your username:");
-  localStorage.setItem('username', username);
+  window.location.href = 'username.html';
 }
 
 let partner = null;

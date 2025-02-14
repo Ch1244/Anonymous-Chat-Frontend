@@ -3,23 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Random Chat</title>
+    <title>Welcome to Random Chat</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1 id="status">Looking for a partner...</h1>
-    <div id="chatContainer">
-      <div id="messageContainer"></div>
-      <div id="inputContainer">
-        <textarea
-          id="messageInput"
-          placeholder="Type a message..."
-          rows="1"
-        ></textarea>
-        <button id="sendButton">➤</button>
-      </div>
+    <div class="centered">
+      <h1>🌍 Welcome to Random Chat! 🌍</h1>
+      <p>Rules and Guidelines:</p>
+      <ul>
+        <li>Be respectful to others.</li>
+        <li>No sharing of personal information.</li>
+        <li>Enjoy chatting with random people!</li>
+      </ul>
+      <button onclick="goToPage('username.html')">Start Chat</button>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+
+    <script>
+      function goToPage(page) {
+        window.location.href = page;
+      }
+    </script>
   </body>
 </html>
