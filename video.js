@@ -1,74 +1,52 @@
-const socket = io();
+const socket = io('/');
+const videoGrid = document.getElementById('video-grid');
+const myPeer = new Peer();
+const myVideo = document.createElement('video');
+myVideo.muted = true;
 
-let localStream;
-let peerConnection;
+navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+}).then(stream => {
+  addVideoStream(myVideo, stream);
 
-const localVideo = document.getElementById('localVideo');
-const remoteVideo = document.getElementById('remoteVideo');
-const statusText = document.getElementById('status');
+  myPeer.on('call', call => {
+    call.answer(stream);
+    const video = document.createElement('video');
+    call.on('stream', userVideoStream => {
+      addVideoStream(video, userVideoStream);
+    });
+  });
 
-// WebRTC Configuration
-const configuration = {
-  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-};
-
-socket.on('connect', () => {
-  statusText.textContent = 'Connected. Waiting for a partner...';
+  socket.on('user-connected', userId => {
+    connectToNewUser(userId, stream);
+  });
 });
 
-// Handle ICE Candidate from Server
-socket.on('ice-candidate', candidate => {
-  peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+socket.on('user-disconnected', userId => {
+  if (peers[userId]) peers[userId].close();
 });
 
-// Handle Offer from Server
-socket.on('offer', async offer => {
-  peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-  const answer = await peerConnection.createAnswer();
-  await peerConnection.setLocalDescription(answer);
-  socket.emit('answer', answer);
+myPeer.on('open', id => {
+  socket.emit('join-room', ROOM_ID, id);
 });
 
-// Handle Answer from Server
-socket.on('answer', answer => {
-  peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-});
-
-// Start Call
-async function startCall() {
-  statusText.textContent = 'Starting call...';
-  
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  localVideo.srcObject = localStream;
-
-  createPeerConnection();
-
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  socket.emit('offer', offer);
+function connectToNewUser(userId, stream) {
+  const call = myPeer.call(userId, stream);
+  const video = document.createElement('video');
+  call.on('stream', userVideoStream => {
+    addVideoStream(video, userVideoStream);
+  });
+  call.on('close', () => {
+    video.remove();
+  });
+  peers[userId] = call;
 }
 
-// End Call
-function endCall() {
-  peerConnection.close();
-  localStream.getTracks().forEach(track => track.stop());
-  statusText.textContent = 'Call ended.';
-  socket.disconnect();
-}
-
-// Create WebRTC Peer Connection
-function createPeerConnection() {
-  peerConnection = new RTCPeerConnection(configuration);
-
-  peerConnection.ontrack = event => {
-    remoteVideo.srcObject = event.streams[0];
-  };
-
-  peerConnection.onicecandidate = event => {
-    if (event.candidate) {
-      socket.emit('ice-candidate', event.candidate);
-    }
-  };
-
-  localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+function addVideoStream(video, stream) {
+  video.srcObject = stream;
+  video.addEventListener('loadedmetadata', () => {
+    video.play();
+  });
+  videoGrid.append(video);
 }
