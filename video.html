@@ -1,38 +1,23 @@
+<!-- video.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Video Chat</title>
-    <style>
-      body {
-        text-align: center;
-        background-color: black;
-        color: white;
-      }
-      video {
-        width: 45%;
-        border-radius: 10px;
-        margin: 5px;
-        border: 2px solid cyan;
-      }
-      button {
-        padding: 10px;
-        margin: 10px;
-        font-size: 16px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Video Chat</h1>
+    <h1>📹 Video Chat</h1>
     <div id="videos">
       <video id="local-video" autoplay muted></video>
       <video id="remote-video" autoplay></video>
     </div>
     <button onclick="startCall()">Start Call</button>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <!-- Add this script ABOVE your custom script -->
+    <!-- Socket.io and Simple-Peer Libraries -->
     <script src="https://anonymous-chat-backend-jquo.onrender.com/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-peer/simplepeer.min.js"></script>
+
     <script>
       const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
       let peer;
@@ -51,6 +36,7 @@
           audio: true,
         });
         document.getElementById("local-video").srcObject = stream;
+
         const roomId = "video-room";
         socket.emit("join-room", roomId);
       }
@@ -68,10 +54,6 @@
 
         peer.on("stream", (stream) => {
           document.getElementById("remote-video").srcObject = stream;
-        });
-
-        peer.on("ice-candidate", (candidate) => {
-          socket.emit("ice-candidate", { target: userId, candidate });
         });
       }
 
