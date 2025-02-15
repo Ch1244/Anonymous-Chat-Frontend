@@ -1,91 +1,54 @@
-// Establish Socket.io Connection
-const socket = io();
+// video.js - Fixed Scope and Socket.IO Path
+const socket = io(); // Fix io not defined
 
-// Video Elements
-const videoGrid = document.getElementById('video-grid');
-let localStream;
+let localStream; // Ensure correct scope
 let peerConnection;
 
-// STUN Server Configuration
-const configuration = {
+const iceServers = {
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
 };
 
-// Start Call Function
+// Start Call
 async function startCall() {
   try {
     localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: true
+      audio: true,
     });
 
     const videoElement = document.createElement('video');
     addVideoStream(videoElement, localStream);
 
-    peerConnection = new RTCPeerConnection(configuration);
-    localStream.getTracks().forEach(track => {
-      peerConnection.addTrack(track, localStream);
-    });
-
-    peerConnection.onicecandidate = event => {
-      if (event.candidate) {
-        socket.emit('candidate', event.candidate);
-      }
-    };
-
-    peerConnection.ontrack = event => {
-      const remoteVideo = document.createElement('video');
-      addVideoStream(remoteVideo, event.streams[0]);
-    };
-
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-
-    socket.emit('offer', offer);
-
+    socket.emit('join-video-room', 'default-room');
   } catch (error) {
     console.error('Error starting call:', error);
   }
 }
 
-// Function to Add Video Stream
+// Add Video Stream
 function addVideoStream(video, stream) {
   video.srcObject = stream;
   video.addEventListener('loadedmetadata', () => {
     video.play();
   });
-  videoGrid.append(video);
+  document.getElementById('video-grid').append(video);
 }
 
-// End Call Function
+// End Call
 function endCall() {
-  if (peerConnection) {
-    peerConnection.close();
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
   }
-  socket.emit('endCall');
-  location.reload();
+  socket.emit('leave-room', 'default-room');
+  document.getElementById('video-grid').innerHTML = '';
+  document.getElementById('status').innerText = 'Call ended.';
 }
 
 // Socket Listeners
-socket.on('offer', async offer => {
-  if (!peerConnection) {
-    startCall();
-  }
-  await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-  const answer = await peerConnection.createAnswer();
-  await peerConnection.setLocalDescription(answer);
-  socket.emit('answer', answer);
+socket.on('user-connected', (userId) => {
+  document.getElementById('status').innerText = `Connected with ${userId}`;
 });
 
-socket.on('answer', answer => {
-  peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-});
-
-socket.on('candidate', candidate => {
-  peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-});
-
-socket.on('endCall', () => {
-  if (peerConnection) peerConnection.close();
-  location.reload();
+socket.on('user-disconnected', (userId) => {
+  document.getElementById('status').innerText = `${userId} disconnected.`;
 });
