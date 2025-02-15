@@ -1,20 +1,24 @@
-<!-- video.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Chat</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="video-container">
-      <h2>Video Chat Room</h2>
-      <div id="video-grid"></div>
-      <button onclick="startCall()">Start Call</button>
-    </div>
+    <h1>📹 Video Chat</h1>
+    <h3 id="status">Looking for a partner...</h3>
 
-    <!-- Correct Path for socket.io.js -->
+    <div id="video-grid"></div>
+
+    <button onclick="startCall()">Start Call</button>
+    <button onclick="endCall()">End Call</button>
+    <button onclick="location.reload()">🔄 New Chat</button>
+
+    <!-- Socket.io for Real-time Communication -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <!-- Video Chat Logic -->
     <script src="video.js"></script>
   </body>
 </html>
