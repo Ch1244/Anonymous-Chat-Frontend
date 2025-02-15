@@ -1,6 +1,6 @@
-/* style.css - Blue Neon HUD */
+/* style.css - HUD Blue Neon Style */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   background-color: #000;
   color: #00aaff;
   text-align: center;
@@ -9,42 +9,42 @@ body {
 
 .neon-blue {
   font-size: 2.5em;
-  text-shadow: 0 0 20px #00aaff;
+  text-shadow: 0 0 30px #00aaff;
+  font-weight: bold;
 }
 
 .neon-border {
   border: 2px solid #00aaff;
-  box-shadow: 0 0 20px #00aaff;
-  padding: 15px;
+  box-shadow: 0 0 30px #00aaff;
+  padding: 20px;
   width: 90%;
   height: 300px;
   overflow-y: scroll;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.85);
   border-radius: 12px;
   margin: 20px auto;
-  scrollbar-width: thin;
 }
 
 #message-input {
-  padding: 10px;
+  padding: 12px;
   width: 60%;
   font-size: 1em;
   color: #00aaff;
   border: 2px solid #00aaff;
   background-color: transparent;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 #send-btn {
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 1.2em;
   background-color: #00aaff;
   color: black;
+  border-radius: 10px;
   font-weight: bold;
-  border-radius: 5px;
+  box-shadow: 0 0 20px #00aaff;
   cursor: pointer;
   transition: 0.3s;
-  box-shadow: 0 0 20px #00aaff;
 }
 
 #send-btn:hover {
@@ -52,29 +52,33 @@ body {
 }
 
 .new-chat-btn {
-  padding: 10px 15px;
+  padding: 12px 20px;
   font-size: 1.1em;
-  background-color: #0066cc;
+  background-color: #0044aa;
   color: white;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #0044aa;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .new-chat-btn:hover {
-  background-color: #0044aa;
+  background-color: #002288;
 }
 
+/* Message Bubbles */
 .sent {
   color: #00ff88;
   text-align: right;
-  padding-right: 5px;
+  font-weight: bold;
+  padding-right: 10px;
 }
 
 .received {
   color: #00aaff;
   text-align: left;
-  padding-left: 5px;
+  font-weight: bold;
+  padding-left: 10px;
 }
 
 .system {

@@ -36,18 +36,21 @@
       const partnerName = document.getElementById("partnerName");
       const statusText = document.getElementById("status");
 
+      const username = prompt("Enter your username:");
+      socket.emit("setUsername", username);
+
       socket.on("pairing", () => {
         statusText.textContent = "Looking for a partner...";
       });
 
-      socket.on("paired", () => {
+      socket.on("paired", (partner) => {
         statusText.textContent = "Connected!";
-        partnerName.textContent = "Partner";
+        partnerName.textContent = partner || "Anonymous";
       });
 
       socket.on("chatMessage", (data) => {
         const message = document.createElement("p");
-        message.classList.add(data.sender === "You" ? "sent" : "received");
+        message.classList.add(data.sender === username ? "sent" : "received");
         message.textContent = `${data.sender}: ${data.message}`;
         chatBox.appendChild(message);
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -61,7 +64,7 @@
       function sendMessage() {
         const msg = messageInput.value.trim();
         if (msg) {
-          socket.emit("chatMessage", { sender: "You", message: msg });
+          socket.emit("chatMessage", { message: msg });
           const message = document.createElement("p");
           message.classList.add("sent");
           message.textContent = `You: ${msg}`;
@@ -71,7 +74,7 @@
       }
 
       newChatBtn.addEventListener("click", () => {
-        location.reload(); // Quick reset for new chat
+        location.reload(); // Start a new chat
       });
     </script>
   </body>
