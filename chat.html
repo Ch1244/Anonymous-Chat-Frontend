@@ -1,20 +1,78 @@
+<!-- chat.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat</title>
+    <title>Random Chat</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <h2 id="status">Looking for a partner...</h2>
-    <div id="chat-container">
-      <div id="messages"></div>
-      <input type="text" id="message-input" placeholder="Type a message..." />
-      <button id="send-button">➤</button>
+    <h1 class="neon-blue">
+      💬 Connected with <span id="partnerName">...</span>
+    </h1>
+    <div id="chat-box" class="neon-border">
+      <p id="status" class="system">Looking for a partner...</p>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <div class="input-container">
+      <input
+        id="message-input"
+        type="text"
+        placeholder="Type a message..."
+        autocomplete="off"
+      />
+      <button id="send-btn">➤</button>
+      <button id="new-chat-btn" class="new-chat-btn">🔄 New Chat</button>
+    </div>
+
+    <script src="https://anonymous-chat-backend-jquo.onrender.com/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
+      const chatBox = document.getElementById("chat-box");
+      const messageInput = document.getElementById("message-input");
+      const sendBtn = document.getElementById("send-btn");
+      const newChatBtn = document.getElementById("new-chat-btn");
+      const partnerName = document.getElementById("partnerName");
+      const statusText = document.getElementById("status");
+
+      socket.on("pairing", () => {
+        statusText.textContent = "Looking for a partner...";
+      });
+
+      socket.on("paired", () => {
+        statusText.textContent = "Connected!";
+        partnerName.textContent = "Partner";
+      });
+
+      socket.on("chatMessage", (data) => {
+        const message = document.createElement("p");
+        message.classList.add(data.sender === "You" ? "sent" : "received");
+        message.textContent = `${data.sender}: ${data.message}`;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      sendBtn.addEventListener("click", sendMessage);
+      messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+
+      function sendMessage() {
+        const msg = messageInput.value.trim();
+        if (msg) {
+          socket.emit("chatMessage", { sender: "You", message: msg });
+          const message = document.createElement("p");
+          message.classList.add("sent");
+          message.textContent = `You: ${msg}`;
+          chatBox.appendChild(message);
+          messageInput.value = "";
+        }
+      }
+
+      newChatBtn.addEventListener("click", () => {
+        location.reload(); // Quick reset for new chat
+      });
+    </script>
   </body>
 </html>
