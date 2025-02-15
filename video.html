@@ -31,7 +31,8 @@
     <button onclick="startCall()">Start Call</button>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-peer/simplepeer.min.js"></script>
+    <!-- Add this script ABOVE your custom script -->
+    <script src="https://anonymous-chat-backend-jquo.onrender.com/socket.io/socket.io.js"></script>
     <script>
       const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
       let peer;
