@@ -5,18 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome to Random Chat</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #000;
+        color: #00aaff; /* Blue Neon */
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 3em;
+        color: #00aaff; /* Blue Neon */
+        text-shadow: 0px 0px 20px #00aaff;
+      }
+
+      p {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+      }
+
+      .btn-container {
+        margin-top: 20px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: black;
+        background-color: #00aaff; /* Blue Neon */
+        text-decoration: none;
+        border-radius: 30px;
+        transition: background-color 0.3s, transform 0.2s;
+        margin: 10px;
+        box-shadow: 0px 0px 20px #00aaff;
+      }
+
+      .btn:hover {
+        background-color: #0088cc;
+        transform: translateY(-3px);
+      }
+
+      .rules {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border: 2px solid #00aaff; /* Blue Neon */
+        border-radius: 15px;
+        width: 320px;
+        text-align: left;
+        margin-top: 30px;
+        box-shadow: 0px 0px 20px #00aaff;
+      }
+
+      .rules h3 {
+        margin-top: 0;
+        color: #00aaff; /* Blue Neon */
+        text-shadow: 0px 0px 10px #00aaff;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        font-size: 1.1em;
+      }
+
+      li {
+        padding: 8px 0;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5em;
+        }
+        p {
+          font-size: 1em;
+        }
+        .btn {
+          font-size: 1em;
+          padding: 12px 25px;
+        }
+        .rules {
+          width: 280px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to Random Chat!</h1>
-    <p>Chat anonymously with strangers.</p>
+    <h1>🌐 Welcome to Random Chat!</h1>
+    <p>Chat with strangers via text or video. Meet new people anonymously!</p>
 
-    <a href="/username.html" class="btn">Start Chat</a>
+    <div class="btn-container">
+      <a href="/username.html" class="btn">Start Text Chat</a>
+      <a href="/video.html" class="btn">Start Video Chat</a>
+    </div>
 
-    <h2>Rules:</h2>
-    <ul>
-      <li>Be respectful.</li>
-      <li>No sharing personal info.</li>
-      <li>Report bad behavior.</li>
-    </ul>
+    <div class="rules">
+      <h3>⚠️ Rules & Guidelines:</h3>
+      <ul>
+        <li>✅ Be respectful to others.</li>
+        <li>🚫 No sharing personal information.</li>
+        <li>🚨 Report inappropriate behavior.</li>
+      </ul>
+    </div>
   </body>
 </html>
