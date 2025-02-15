@@ -1,87 +1,61 @@
 <!-- video.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
     <title>Video Chat</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>📹 Video Chat</h1>
-    <div id="videos">
-      <video id="local-video" autoplay muted></video>
-      <video id="remote-video" autoplay></video>
-    </div>
-    <button onclick="startCall()">Start Call</button>
+    <h1 class="neon-blue">🎥 Video Chat</h1>
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+    <button id="startCall">Start Call</button>
 
-    <!-- Socket.io and Simple-Peer Libraries -->
     <script src="https://anonymous-chat-backend-jquo.onrender.com/socket.io/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-peer/simplepeer.min.js"></script>
-
     <script>
       const socket = io("https://anonymous-chat-backend-jquo.onrender.com");
-      let peer;
+      let peerConnection;
 
-      socket.on("user-connected", (userId) => {
-        createPeer(userId);
+      const localVideo = document.getElementById("localVideo");
+      const remoteVideo = document.getElementById("remoteVideo");
+
+      // Access camera
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          localVideo.srcObject = stream;
+          socket.emit("join-room", "video-room");
+        });
+
+      // WebRTC Handling
+      socket.on("user-connected", async (partnerId) => {
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        socket.emit("offer", { target: partnerId, offer });
       });
 
-      socket.on("offer", handleOffer);
-      socket.on("answer", handleAnswer);
-      socket.on("ice-candidate", handleIceCandidate);
+      socket.on("offer", async (payload) => {
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(payload.offer)
+        );
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        socket.emit("answer", { target: payload.target, answer });
+      });
 
-      async function startCall() {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-        document.getElementById("local-video").srcObject = stream;
+      socket.on("answer", async (payload) => {
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(payload.answer)
+        );
+      });
 
-        const roomId = "video-room";
-        socket.emit("join-room", roomId);
-      }
-
-      function createPeer(userId) {
-        peer = new SimplePeer({
-          initiator: true,
-          trickle: false,
-          stream: document.getElementById("local-video").srcObject,
-        });
-
-        peer.on("signal", (data) => {
-          socket.emit("offer", { target: userId, signal: data });
-        });
-
-        peer.on("stream", (stream) => {
-          document.getElementById("remote-video").srcObject = stream;
-        });
-      }
-
-      function handleOffer(payload) {
-        peer = new SimplePeer({
-          initiator: false,
-          trickle: false,
-          stream: document.getElementById("local-video").srcObject,
-        });
-
-        peer.on("signal", (data) => {
-          socket.emit("answer", { target: payload.callerID, signal: data });
-        });
-
-        peer.on("stream", (stream) => {
-          document.getElementById("remote-video").srcObject = stream;
-        });
-
-        peer.signal(payload.signal);
-      }
-
-      function handleAnswer(payload) {
-        peer.signal(payload.signal);
-      }
-
-      function handleIceCandidate(payload) {
-        peer.signal(payload.candidate);
-      }
+      socket.on("ice-candidate", async (incoming) => {
+        try {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(incoming));
+        } catch (e) {
+          console.error("Error adding ice candidate:", e);
+        }
+      });
     </script>
   </body>
 </html>
